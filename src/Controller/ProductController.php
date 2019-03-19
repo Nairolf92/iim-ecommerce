@@ -68,7 +68,7 @@ class ProductController extends FOSRestController
 
         if(!count($errors)) {
             $manager->persist($product);
-            $manager->flush($product);
+            $manager->flush();
 
             return $this->json($product, Response::HTTP_CREATED);
         } else {
@@ -76,6 +76,35 @@ class ProductController extends FOSRestController
                 'success' => false,
                 'error' => $errors[0]->getMessage(). '('. $errors[0]->getPropertyPath() . ')'
             ], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * @FOSRest\Delete("/api/products/{id}")
+     *
+     * @param ObjectManager $manager
+
+     * @param $id
+     * @return Response
+     */
+    public function deleteProductAction(ObjectManager $manager, $id)
+    {
+
+        $productRepository = $manager->getRepository(Product::class);
+        $product = $productRepository->find($id);
+
+        if($product instanceof Product) {
+            $manager->remove($product);
+            $manager->flush();
+
+            return $this->json([
+                'success'=> true
+            ], Response::HTTP_OK);
+        } else {
+            return $this->json([
+                'success' => false,
+                'error' => 'Product not found'
+            ], Response::HTTP_NOT_FOUND);
         }
     }
 }
