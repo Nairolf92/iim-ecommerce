@@ -1,0 +1,14 @@
+version: "3.3"
+services:
+  iim_mysql:
+    container_name: iim_mysql
+    hostname: by_msql
+    image: mysql:5.7
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - data:/var/lib/mysql
+volumes:
+  data:
